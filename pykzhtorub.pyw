@@ -5,18 +5,23 @@ import re
 from tkinter import *
 import sys
 window = Tk()
+price_datetime = ""
 window.attributes("-topmost",True)
 window.title("KZT - RUB")
-window.geometry('300x26')
+window.geometry('464x48')
 window.resizable(width=False, height=False)
 lbl = Label(window, text="KZT:")
 lbl.grid(column=0, row=0)
 txt = Entry(window,width=15)
 txt.grid(column=1, row=0)
-lb2 = Label(window, text="RUB:")
+lb2 = Label(window, text="            RUB (Current exchange rate):")
 lb2.grid(column=2, row=0)
 txt2 = Entry(window,width=15)
 txt2.grid(column=3, row=0)
+lb3 = Label(window, text="RUB (~QIWI -> Steam commission):")
+lb3.grid(column=2, row=1)
+txt3 = Entry(window,width=15)
+txt3.grid(column=3, row=1)
 def convertStr(if1):
     try:
         ret = int(if1)
@@ -48,6 +53,10 @@ def start():
     price_datetime, exchange_rates = get_exchange_list_xrates(source_currency, amount)
     txt2.delete(0, 'end')
     txt2.insert(0, re.sub("[, ']", '', substring_after(str(exchange_rates), "'Russian Ruble': ")[:8]))
+    c = float(re.sub("[, ']", '', substring_after(str(exchange_rates), "'Russian Ruble': ")[:8]))/100
+    txt3.delete(0, 'end')
+    txt3.insert(0, "{0:.1f}".format(c*115))
+    window.title("KZT - RUB (Last updated: "+ str(price_datetime)[:-6] + ")")
 btns = Button(window, text="Convert", command=start)
-btns.grid(column=4, row=0)
+btns.grid(column=6, row=0)
 window.mainloop()
